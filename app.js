@@ -12,8 +12,23 @@ const methydur22 = [0.85, 1.06, 1.60, 2.13, 2.66, 3.19, 3.73, 4.26, 4.03, 3.81, 
 const methydur33 = [1.04, 2.08, 3.12, 4.16, 5.2, 6.24, 7.28, 8.32, 9.36, 10.4, 9.48, 8.64, 7.88, 7.18, 6.54, 5.96, 5.43, 4.94, 4.49, 4.07, 3.69, 3.35, 3.03, 2.75];
 const comboLA20C18 = [1.27, 3.54, 5.82, 6.39, 5.86, 5.63, 5.1, 5.68, 6.95, 8.62, 9.18, 9.24, 8.5, 7.32, 6.35, 5.49, 4.83, 4.38, 3.94, 3.9, 3.47, 3.14, 2.92, 2.7];
 
-// 2. 初始化圖表
+// app.js (替換「2. 初始化圖表」的區塊)
+
 const ctx = document.getElementById('medicationChart').getContext('2d');
+
+// ✨ 新增：自製一個「白底小幫手」
+const whiteBackgroundPlugin = {
+    id: 'whiteBackground',
+    beforeDraw: (chart) => {
+        const context = chart.ctx;
+        context.save();
+        context.globalCompositeOperation = 'destination-over'; // 畫在所有東西的背後
+        context.fillStyle = '#ffffff'; // 純白色
+        context.fillRect(0, 0, chart.width, chart.height); // 填滿整張畫布
+        context.restore();
+    }
+};
+
 const myChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -41,7 +56,9 @@ const myChart = new Chart(ctx, {
                 }
             }
         }
-    }
+    },
+    // ✨ 新增：把小幫手聘僱進來！
+    plugins: [whiteBackgroundPlugin] 
 });
 
 // 3. 按鈕切換邏輯
@@ -77,14 +94,29 @@ if(timeInput) {
     });
 }
 
-// 5. 下載功能
+// 5. 下載功能 (解決標籤不見的更新版)
 const downloadBtn = document.getElementById('downloadBtn');
 if(downloadBtn) {
     downloadBtn.addEventListener('click', function() {
-        const canvas = document.getElementById('medicationChart');
-        const link = document.createElement('a');
-        link.download = '藥物濃度圖表.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
+        
+        // 1. 打開內建標籤
+        myChart.options.plugins.legend.display = true;
+        myChart.update('none'); 
+
+        // ✨ 2. 新增倒數計時器 (setTimeout)，等待 150 毫秒 (0.15秒) 讓瀏覽器把標籤畫好
+        setTimeout(function() {
+            
+            // 3. 拍照！
+            const canvas = document.getElementById('medicationChart');
+            const link = document.createElement('a');
+            link.download = '藥物濃度圖表.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            // 4. 拍完照，把內建標籤關掉，恢復乾淨的網頁介面
+            myChart.options.plugins.legend.display = false;
+            myChart.update('none');
+
+        }, 150); // 150 毫秒後執行這區塊的程式
     });
 }
