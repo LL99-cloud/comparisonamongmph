@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADHD 藥物血中濃度模擬器</title>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6; /* 溫和的醫療感淺灰色背景 */
+            text-align: center;
+            padding: 20px;
+        }
+        .chart-container {
+            width: 80%; /* 限制圖表寬度 */
+            margin: 0 auto; /* 讓圖表在畫面上置中 */
+            background-color: white; /* 畫布底色為白色 */
+            padding: 20px;
+            border-radius: 10px; /* 圓角看起來更現代、專業 */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* 加一點陰影增加立體感 */
+        }
+    /* ... 原本的 body 和 chart-container 維持不變 ... */
+        
+        /* 1. 新增按鈕區塊的樣式 */
+        .controls {
+            margin-bottom: 20px;
+        }
+        
+        /* 2. 把按鈕設計得像「藥丸」一樣圓潤專業 */
+        .med-btn {
+            padding: 8px 16px;
+            margin: 5px;
+            border: 2px solid #ccc;
+            border-radius: 20px; /* 膠囊形狀 */
+            background-color: white;
+            color: #333;
+            cursor: pointer; /* 滑鼠移過去會變成手指 */
+            font-size: 14px;
+            transition: all 0.3s ease; /* 點擊時的顏色漸變動畫 */
+        }
+
+        /* 3. 當按鈕被「選中 (active)」時的樣式 */
+        .med-btn.active {
+            background-color: #4bc0c0; /* 醫療綠 */
+            color: white;
+            border-color: #4bc0c0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <h1>藥物血中濃度動態比較圖</h1>
+    <p>不同 ADHD 藥效釋放時間與濃度視覺化</p>
+
+    <div style="margin-bottom: 15px; display: flex; justify-content: center; align-items: center; gap: 20px;">
+        <div>
+            <label for="startTime" style="font-weight: bold; font-size: 16px;">設定第一顆藥物服用時間：</label>
+            <input type="time" id="startTime" value="07:30" style="padding: 5px; font-size: 16px; border-radius: 5px; border: 1px solid #ccc;">
+        </div>
+        
+        <button id="downloadBtn" style="padding: 8px 16px; font-size: 14px; background-color: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
+            💾 下載圖表 (PNG)
+        </button>
+    </div>
+
+    <div class="controls">
+        <button class="med-btn" data-index="0">Ritalin 20mg</button>
+        <button class="med-btn" data-index="1">Ritalin 40mg</button>
+        <button class="med-btn" data-index="2">Ritalin 20mg BID</button>
+        <button class="med-btn" data-index="3">Concerta 18mg</button>
+        <button class="med-btn" data-index="4">Concerta 36mg</button>
+        <button class="med-btn" data-index="5">Methydur 22mg</button>
+        <button class="med-btn" data-index="6">Methydur 33mg</button>
+        <button class="med-btn" data-index="7">LA20 + C18</button>
+    </div>
+    
+    <div class="chart-container">
+        <canvas id="medicationChart"></canvas>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
